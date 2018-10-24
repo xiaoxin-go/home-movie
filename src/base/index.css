@@ -1,0 +1,12 @@
+.index-body{
+  margin-top: 60px;
+  height: 80%;
+  width: 100%;
+  overflow-y: auto;
+  /*background-color: #f5f6f7;*/
+  background-color: #f0f0f0;
+}
+.index-body>div{
+  width: 80%;
+  margin: auto;
+}
