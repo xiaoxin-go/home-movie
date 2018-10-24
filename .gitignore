@@ -12,5 +12,5 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
-performer/*.jpg
-movie/*.jpg
+*.jpg
+*.jpg
