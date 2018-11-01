@@ -3,31 +3,17 @@
     <Spin size="large" fix v-if="loading"></Spin>
     <div class="index-body">
       <div>
-        <CheckboxGroup v-model="id_list">
         <div class="index-item" v-for="(data, index) in data_list">
             <div class="item-img" @click="show(data.title)">
-              <div style="width: 315.3px;height: 212.3px;">
-                <img style="height: 212.3px;width: 315.3px;" :src="seturl(data.title)" :alt="data.title">
-              </div>
-
+              <img style="width: 100%;" :src="seturl(data.title)" :alt="data.title">
             </div>
             <div class="item-text">
               <div class="item-text-title">{{data.info}}</div>
-              <div class="item-text-name">
-                <Checkbox :label="data.id"><span style="margin: 0;padding: 0;"></span></Checkbox>
-                {{settext(data.title)}}/{{$formatDate(data.release_time)}}
-                <Button @click="addMoviecol(data.id)" size="small">收藏</Button>
-              </div>
-
-
+              <div class="item-text-name">{{settext(data.title)}}/{{$formatDate(data.release_time)}}</div>
+              <Button @click="delData(data.id)" size="small">取消收藏</Button>
             </div>
         </div>
-        </CheckboxGroup>
       </div>
-      <div style="position: absolute;top:16px;left: 524px;width: 60px;z-index:2000">
-        <b-button size="sm" @click="delData">删除</b-button>
-      </div>
-
     </div>
     <Page style="margin-bottom: 25px;" :total="total" :current="page" :page-size="page_size" :page-size-opts="[20,50,100,200,500]" @on-change="changePage" @on-page-size-change="changePagesize" show-elevator show-sizer />
 
@@ -35,7 +21,7 @@
 </template>
 
 <script>
-  import {getMovie, delMovie, addMoviecol} from '../api/index.js';
+  import {getMoviecol, delMoviecol} from '../api/index.js';
     export default {
       data(){
         return{
@@ -44,16 +30,15 @@
           //page:this.page ,            // 当前页
           data_list: [],     // 标签列表
           loading:true,
-          id_list: [],
+          ids:[],
       }
     },
       components:{
       },
       computed:{
         page() {
-          console.log(this.$route.params.bid);
           return this.$route.params.bid || 1
-        },
+        }
       },
       created(){
         console.log(this.keyword);
@@ -61,13 +46,12 @@
       },
       methods: {
         async getData() {
-          this.loading = true;
           let jsonData = {
             page: this.page,
             page_size: this.page_size,
             total: this.total,
           };
-          let resp = await getMovie(jsonData);
+          let resp = await getMoviecol(jsonData);
           this.total = resp.total;
           console.log(resp);
           if (this.total > 0) {
@@ -75,32 +59,20 @@
           }
           this.loading = false
         },
-        // 删除数据
-        async delData(){
-          console.log(Array(this.id_list));
-          let json_data = {
-            id_list: Array(this.id_list),
-          };
-          let resp = await delMovie(json_data);
-          if (resp.state === 1){
-            this.$Message.success('删除成功')
-          }else{
-            this.$Message.warning('删除失败')
-          }
-          this.id_list = [];
-          this.getData();
-        },
 
-        // 添加收藏
-        async addMoviecol(id){
-          let resp = await addMoviecol({id:id});
-          if(resp.state === 0){
-            this.$Message.warning('用户未登录')
-          }else if(resp.state === 1){
-            this.$Message.success('收藏成功')
+        async delData(id){
+          //let id = this.data_list[index].id;
+          let resp = await delMoviecol({id:id});
+          if (resp.state === 1){
+            //this.data_list.splice(index, 1);    // 从原数组中移除
+            //this.total -= 1;
+            this.$Message.success('取消收藏成功')
+          }else if(resp.state === 0){
+            this.$Message.warning('请先登录')
           }else{
-            this.$Message.success('收藏失败')
+            this.$Message.warning('取消收藏失败')
           }
+          this.getData();
         },
 
         show(title){
@@ -127,8 +99,7 @@
           this.getData();
         },*/
         changePage(index){
-          this.$router.push(`/page/${index}`);
-          this.getData()
+          this.$router.push(`/page/${index}`)
         },
 
         // 改变每页显示的条数
@@ -142,21 +113,5 @@
 </script>
 
 <style>
-  .index-item{
-    display: inline-block;
-    margin: 10px;
-    width: 324px;
-    background: #fafafa;
-    padding-bottom: 5px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.3);
-  }
-  .item-text{
-    font-size: 14px;
-    color: #000;
-  }
-  .item-text-title{
-    height: 40px;
-    overflow: hidden;
-  }
 
 </style>

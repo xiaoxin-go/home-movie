@@ -7,6 +7,14 @@
   background-color: #f0f0f0;
 }
 .index-body>div{
-  width: 80%;
   margin: auto;
+  width: 90%;
+}
+.item-img{
+  width: 100%;
+  padding: 4px;
+  background: #fff;
+}
+.item-img:hover{
+  cursor:pointer;
 }

@@ -1,20 +1,19 @@
 <template>
   <div class="main">
-    <Nav></Nav>
+    <Spin size="large" fix v-if="loading"></Spin>
     <div class="index-body">
       <div>
         <div class="index-item" v-for="(data, index) in data_list">
-          <b-link @click="show(data.title)">
-            <div class="item-img">
+            <div class="item-img" @click="show(data.title)">
               <img style="width: 100%;" :src="seturl(data.title)" :alt="data.title">
             </div>
             <div class="item-text">
-              <div class="item-text-title">{{settitle(data.title)}}</div>
+              <div class="item-text-title">{{data.info}}</div>
               <div class="item-text-name">{{settext(data.title)}}/{{$formatDate(data.release_time)}}</div>
+              <Button @click="delData(data.id)" size="small"></Button>
             </div>
-          </b-link>
         </div>
-        <b-pagination  size="md" align="center" @change="changePage" :total-rows="total"  v-model="page"  :per-page="page_size" ></b-pagination >
+        <Page style="margin-bottom: 25px;" :total="total" :current="page" :page-size="page_size" :page-size-opts="[20,50,100,200]" @on-change="changePage" @on-page-size-change="changePagesize" show-elevator show-sizer />
       </div>
 
     </div>
@@ -22,7 +21,6 @@
 </template>
 
 <script>
-  import Nav from '../base/Nav.vue'
   import {getGenre} from '../api/index.js';
     export default {
       data(){
@@ -31,10 +29,10 @@
           page_size:20,      // 每页条数
           page:1,            // 当前页
           data_list: [],     // 标签列表
+          loading:true,
       }
     },
       components:{
-        Nav
       },
       created(){
         this.getData()
@@ -49,7 +47,8 @@
           let jsonData = {
             page: this.page,
             page_size: this.page_size,
-            genre: this.genre
+            genre: this.genre,
+            total: this.total,
           };
           let resp = await getGenre(jsonData);
           this.total = resp.total;
@@ -57,6 +56,17 @@
           if (this.total > 0) {
             this.data_list = resp.data;
           }
+          this.loading = false;
+        },
+
+        async delData(id){
+          let resp = await delMovie({id:id});
+          if (resp.state === 1){
+            this.$Message.success('删除成功')
+          }else{
+            this.$Message.warning('删除失败')
+          }
+          this.getData();
         },
 
         show(title){
@@ -94,21 +104,5 @@
 </script>
 
 <style>
-  .index-item{
-    display: inline-block;
-    margin: 10px;
-    width: 20%;
-  }
-  .item-text{
-    font-size: 14px;
-    color: #000;
-  }
-  .item-text-title{
-    height: 40px;
-    overflow: hidden;
-  }
-  /*.index-item:hover{*/
-    /*width: 60%;*/
-  /*}*/
 
 </style>

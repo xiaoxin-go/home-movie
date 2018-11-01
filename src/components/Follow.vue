@@ -3,26 +3,16 @@
     <Spin size="large" fix v-if="loading"></Spin>
     <div class="index-body">
       <div>
-        <CheckboxGroup v-model="id_list">
         <div class="performer-item" v-for="(data, index) in data_list">
-            <div style="padding:8px;background-color: #fff;" @click="show(data.name)">
-              <div class="performer-item-img">
+            <div style="padding:8px;background-color: #fff;" @click="show(data.name)"><div class="performer-item-img">
               <img style="height: 324px;float: right;" :src="'/static/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
-              </div>
+            </div>
             </div>
             <div class="performer-item-text">
-              <div class="performer-text-title">
-                <Checkbox :label="data.id"><span style="margin: 0;padding: 0;"></span></Checkbox>
-                {{data.name}}
-                <Button @click="addFollow(data.id)" size="small">关注</Button>
-              </div>
+              <div class="performer-text-title">{{data.name}}</div>
+              <button @click="delData(data.id)">取消关注</button>
             </div>
         </div>
-        </CheckboxGroup>
-      </div>
-
-      <div style="position: absolute;top:16px;left: 524px;width: 60px;z-index:2000">
-        <b-button size="sm"  @click="delData">删除</b-button>
       </div>
     </div>
     <Page style="margin-bottom: 25px;" :total="total" :current="page" :page-size="page_size" :page-size-opts="[20,50,100,200,500]" @on-change="changePage" @on-page-size-change="changePagesize" show-elevator show-sizer />
@@ -31,7 +21,7 @@
 </template>
 
 <script>
-  import {getPerformer,delPerformer, addFollow} from '../api/index.js';
+  import {getFollow,delFollow} from '../api/index.js';
     export default {
       data(){
         return{
@@ -40,7 +30,6 @@
           //page:1,            // 当前页
           data_list: [],     // 标签列表
           loading:true,
-          id_list:[],
       }
     },
       components:{
@@ -56,13 +45,12 @@
       },
       methods: {
         async getData() {
-          this.loading = true;
           let jsonData = {
             page: this.page,
             page_size: this.page_size,
             total: this.total,
           };
-          let resp = await getPerformer(jsonData);
+          let resp = await getFollow(jsonData);
           this.total = resp.total;
           console.log(resp);
           if (this.total > 0) {
@@ -74,31 +62,15 @@
         show(name){
           this.$router.push({path:`/performer/${name}`})
         },
-
-        // 删除数据
-        async delData(){
-          console.log(this.id_list);
-          let resp = await delPerformer({id_list:Array(this.id_list)});
+        async delData(id){
+          let resp = await delFollow({id:id});
           if (resp.state === 1){
-            this.$Message.success('演员删除成功')
+            this.$Message.success('取消关注成功')
           }else{
-            this.$Message.warning('演员删除失败')
+            this.$Message.warning('取消关注失败')
           }
-          this.id_list = [];
           this.getData();
         },
-        //关注演员
-        async addFollow(id){
-          let resp = await addFollow({id:id});
-          if(resp.state === 0){
-            this.$Message.warning('用户未登录')
-          }else if(resp.state === 1){
-            this.$Message.success('关注成功')
-          }else{
-            this.$Message.success('关注失败')
-          }
-        },
-
         // 改变页数
         /*changePage(index){
           this.page = index;
@@ -107,7 +79,7 @@
         },*/
 
         changePage(index){
-          this.$router.push(`/performer/page/${index}`)
+          this.$router.push(`/page/${index}`)
         },
 
         // 改变每页显示的条数
@@ -120,33 +92,6 @@
     }
 </script>
 
-<style scoped>
-  .performer-item{
-    background-color: #fafafa;
-    display: inline-block;
-    margin: 10px;
-    width: 244px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.3);
-  }
-  .performer-item-text{
-    font-size: 14px;
-    color: #000;
-  }
-  .performer-text-title{
-    height: 40px;
-    line-height: 40px;
-    overflow: hidden;
-  }
-  .performer-item-img{
-    width: 227px;
-    height: 324px;
-    overflow: hidden;
-  }
-  .performer-item-img:hover{
-    cursor: pointer;
-  }
-  /*.index-item:hover{*/
-    /*width: 60%;*/
-  /*}*/
+<style>
 
 </style>

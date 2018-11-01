@@ -9,11 +9,19 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import {formatDate} from "./base/date.js";
 import './base/index.css';
+import 'iview/dist/styles/iview.css';
+import {Button, Page, Spin, Message, CheckboxGroup, Checkbox} from 'iview';
 
 
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
-//Vue.use(Router);
+Vue.component('Button', Button);
+Vue.component('Page',Page);
+Vue.component('Spin',Spin);
+Vue.component('CheckboxGroup',CheckboxGroup);
+Vue.component('Checkbox',Checkbox);
+Vue.prototype.$Message = Message;
+
 
 Vue.prototype.$format = function (time) {
   if(!time)return null;

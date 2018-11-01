@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <Nav></Nav>
+    <Spin size="large" fix v-if="loading"></Spin>
     <div v-show="image_detail" @click="image_detail=false" style="position:fixed;background-color:rgba(0, 0, 0, 0.5);width: 100%;height: 100%;">
       <img style="position: relative;height: 80%;top: 5%;" :src="image_detail" @click="image_detail=false" />
     </div>
@@ -68,7 +68,6 @@
 </template>
 
 <script>
-  import Nav from '../base/Nav.vue'
   import {getMovieDetail} from '../api/index.js';
 
   export default {
@@ -82,7 +81,8 @@
         data_list: [],     // 标签列表
         link_title: [{width: '60%', label: '名称'}, {width: '20%', label: '大小'}, {width: '20%', label: '分享日期'}],
         links: [],
-		image_detail: null,
+		  image_detail: null,
+        loading:true,
       }
     },
     computed: {
@@ -91,7 +91,6 @@
       }
     },
     components: {
-      Nav
     },
     created() {
       console.log('name:', this.title);
@@ -107,6 +106,7 @@
         this.base_data = resp.base_data;
         this.data_list = resp.data;
         this.links = resp.links;
+        this.loading = false;
       },
 	  
 	  show_image(image_url){

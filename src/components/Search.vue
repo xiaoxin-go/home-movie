@@ -4,17 +4,17 @@
     <div class="index-body">
       <div>
         <div class="index-item" v-for="(data, index) in data_list">
-          <b-link @click="show(data.title)">
-            <div class="item-img">
+          <b-link >
+            <div class="item-img" @click="show(data.title)">
               <img style="width: 100%;" :src="seturl(data.title)" :alt="data.title">
             </div>
             <div class="item-text">
-              <div class="item-text-title">{{settitle(data.title)}}</div>
+              <div class="item-text-title">{{data.info}}</div>
               <div class="item-text-name">{{settext(data.title)}}/{{$formatDate(data.release_time)}}</div>
             </div>
           </b-link>
         </div>
-        <b-pagination  size="md" align="center" @change="changePage" :total-rows="total"  v-model="page"  :per-page="page_size" ></b-pagination >
+        <Page style="margin-bottom: 25px;" :total="total" :current="page" :page-size="page_size" :page-size-opts="[20,50,100,200]" @on-change="changePage" @on-page-size-change="changePagesize" show-elevator show-sizer />
       </div>
 
     </div>
@@ -51,6 +51,7 @@
             page: this.page,
             page_size: this.page_size,
             keyword: this.keyword,
+            total: this.total,
           };
           let resp = await getMovie(jsonData);
           this.total = resp.total;
@@ -95,32 +96,5 @@
 </script>
 
 <style>
-.index-body{
-  margin-top: 60px;
-  height: 80%;
-  width: 100%;
-  overflow-y: auto;
-  background-color: #f5f6f7;
-}
-.index-body>div{
-  width: 80%;
-  margin: auto;
-}
-  .index-item{
-    display: inline-block;
-    margin: 10px;
-    width: 20%;
-  }
-  .item-text{
-    font-size: 14px;
-    color: #000;
-  }
-  .item-text-title{
-    height: 40px;
-    overflow: hidden;
-  }
-  /*.index-item:hover{*/
-    /*width: 60%;*/
-  /*}*/
 
 </style>
