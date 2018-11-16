@@ -24,8 +24,9 @@
         </CheckboxGroup>
       </div>
 
-      <div style="position: fixed;top:5px;left: 524px;width: 120px;z-index:2000">
+      <div style="position: fixed;top:5px;left: 524px;width: 180px;z-index:2000">
         <b-button size="sm"  @click="delData">删除</b-button>
+        <b-button size="sm" @click="restore">还原</b-button>
         <b-button size="sm"  @click="selectAll">全选</b-button>
       </div>
     </div>
@@ -35,12 +36,12 @@
 </template>
 
 <script>
-  import {getPerformer,delPerformer, addFollow} from '../api/index.js';
+  import {getPerformerS,delPerformer, addFollow, restore} from '../api/index.js';
     export default {
       data(){
         return{
         total:0,          // 总条数
-          page_size:20,      // 每页条数
+          page_size:50,      // 每页条数
           page:1,            // 当前页
           data_list: [],     // 标签列表
           loading:true,
@@ -63,6 +64,7 @@
         console.log(this.keyword);
         this.getData()
       },
+
       methods: {
         async getData() {
           this.loading = true;
@@ -71,7 +73,7 @@
             page_size: this.page_size,
             total: this.total,
           };
-          let resp = await getPerformer(jsonData);
+          let resp = await getPerformerS(jsonData);
           this.total = resp.total;
           console.log(resp);
           if (this.total > 0) {
@@ -83,8 +85,22 @@
         show(name){
           this.$router.push({path:`/performer/${name}`})
         },
+        // 还原数据
+        async restore(){
+          let len = this.id_list.length;
+          if (len === 0){this.$Message.warning('Please select performer.');return}
+          let resp = await restore({id_list:Array(this.id_list)});
+          if (resp.state === 1){
+            this.total -= len;
+            this.$Message.success('演员还原成功')
+          }else{
+            this.$Message.warning('演员还原成功')
+          }
+          this.id_list = [];
+          this.getData();
+        },
 
-        // 删除数据
+        // 彻底删除数据
         async delData(){
           console.log(this.id_list);
           let len = this.id_list.length;
@@ -122,7 +138,7 @@
 
 
         changePage(index){
-          this.$router.push(`/performer/page/${index}`)
+          this.$router.push(`/recyle/page/${index}`)
         },
 
         // 改变每页显示的条数

@@ -17,8 +17,21 @@ export default new Router({
     {path:'/performer/page/:bid', component:()=>import('../components/Performer.vue')},
     {path:'/performer/:bid', component:()=>import('../components/PerformerDetail.vue')},
 
-    // 系列
+    // 类别
     {path:'/genre/:bid', component:()=>import('../components/Genre.vue')},
+    {path:'/genre/:bid/:page', component:()=>import('../components/Genre.vue')},
+
+    {path:'/series/:bid', component:()=>import('../components/Series.vue')},
+    {path:'/series/:bid/:page', component:()=>import('../components/Series.vue')},
+
+    {path:'/vender/:bid', component:()=>import('../components/Vender.vue')},
+    {path:'/vender/:bid/:page', component:()=>import('../components/Vender.vue')},
+
+    {path:'/studio/:bid', component:()=>import('../components/Studio.vue')},
+    {path:'/studio/:bid/:page', component:()=>import('../components/Studio.vue')},
+
+    {path:'/director/:bid', component:()=>import('../components/Director.vue')},
+    {path:'/director/:bid/:page', component:()=>import('../components/Director.vue')},
 
     // 收藏
     {path:'/moviecol', component:()=>import('../components/Moviecol.vue')},
@@ -28,6 +41,10 @@ export default new Router({
     {path:'/follow', component:()=>import('../components/Follow.vue')},
     {path:'/follow/page/:bid', component:()=>import('../components/Follow.vue')},
 
+    // 注册
+    {path:'/register', component:()=> import('../components/Register.vue')},
+    {path:'/recyle', component:()=> import('../components/Recyle.vue')},
+    {path:'/recyle/page/:bid', component:()=>import('../components/Recyle.vue')},
     // {path:'/index', component:()=>import('../components/Index.vue')},
     {path:'/:bid', component:()=>import('../components/IndexDetail.vue')},
   ]

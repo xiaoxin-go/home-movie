@@ -9,6 +9,7 @@
 .index-body>div{
   margin: auto;
   width: 90%;
+  padding-top: 10px;
 }
 .item-img{
   width: 100%;
@@ -17,4 +18,7 @@
 }
 .item-img:hover{
   cursor:pointer;
+}
+.ivu-message{
+  z-index: 2500;
 }

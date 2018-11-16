@@ -58,7 +58,7 @@
         }
         return 1
       },
-      genre(){
+      director(){
         return this.$route.params.bid
       }
     },
@@ -70,7 +70,7 @@
         let jsonData = {
           page: this.get_page,
           page_size: this.page_size,
-          data: {genre:this.genre},
+          data: {director:this.director},
           total: this.total,
         };
         let resp = await getGenre(jsonData);
@@ -160,7 +160,7 @@
       changePage(index){
         this.id_list = [];
         this.page = index;
-        this.$router.push(`/genre/${this.genre}/${index}`);
+        this.$router.push(`/director/${this.director}/${index}`);
       },
 
       // 改变每页显示的条数

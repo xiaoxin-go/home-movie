@@ -36,7 +36,7 @@
 </template>
 
 <script>
-  import {getMovie, delMovie, addMoviecol,changeState} from '../api/index.js';
+  import {getMovie, delMovie, addMoviecol,changeState, getGenre} from '../api/index.js';
     export default {
       data(){
         return{
@@ -52,34 +52,34 @@
       },
       computed:{
         get_page() {
-          let page = this.$route.params.bid;
+          let page = this.$route.params.page;
           if(page){
             return parseInt(page);
           }
           return 1
         },
+        series(){
+          return this.$route.params.bid
+        }
       },
       created(){
         this.getData()
       },
       methods: {
         async getData() {
-          this.loading = true;
-          //this.page = this.get_page;
-          console.log('this.page:',this.get_page);
-          console.log(this.page);
           let jsonData = {
             page: this.get_page,
             page_size: this.page_size,
+            data: {series:this.series},
             total: this.total,
           };
-          let resp = await getMovie(jsonData);
+          let resp = await getGenre(jsonData);
           this.total = resp.total;
           console.log(resp);
           if (this.total > 0) {
             this.data_list = resp.data;
           }
-          this.loading = false
+          this.loading = false;
         },
         // 删除数据
         async delData(){
@@ -99,15 +99,16 @@
           this.id_list = [];
           this.getData();
         },
+
         //删除单个数据
         async del(index, id){
-           let resp = await delMovie({id:id});
-           if(resp.state===1){
-             this.data_list.splice(index,1);
-             this.$Message.success('删除成功')
-           }else{
-             this.$Message.warning('删除失败')
-           }
+          let resp = await delMovie({id:id});
+          if(resp.state===1){
+            this.data_list.splice(index,1);
+            this.$Message.success('删除成功')
+          }else{
+            this.$Message.warning('删除失败')
+          }
         },
 
         // 添加收藏
@@ -159,7 +160,7 @@
         changePage(index){
           this.id_list = [];
           this.page = index;
-          this.$router.push(`/page/${index}`);
+          this.$router.push(`/series/${this.series}/${index}`);
         },
 
         // 改变每页显示的条数

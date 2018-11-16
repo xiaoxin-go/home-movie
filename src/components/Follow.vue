@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-    <Page style="margin-bottom: 25px;" :total="total" :current="page" :page-size="page_size" :page-size-opts="[20,50,100,200,500]" @on-change="changePage" @on-page-size-change="changePagesize" show-elevator show-sizer />
+    <Page style="margin-bottom: 25px;" :total="total" show-total :current="page" :page-size="page_size" :page-size-opts="[20,50,100,200,500]" @on-change="changePage" @on-page-size-change="changePagesize" show-elevator show-sizer />
 
   </div>
 </template>
@@ -27,7 +27,7 @@
         return{
         total:0,          // 总条数
           page_size:200,      // 每页条数
-          //page:1,            // 当前页
+          page:1,            // 当前页
           data_list: [],     // 标签列表
           loading:true,
       }
@@ -35,9 +35,13 @@
       components:{
       },
       computed:{
-        page() {
-          return this.$route.params.bid || 1
-        }
+        get_page() {
+          let page = this.$route.params.bid;
+          if(page){
+            return parseInt(page);
+          }
+          return 1
+        },
       },
       created(){
         console.log(this.keyword);
@@ -79,13 +83,21 @@
         },*/
 
         changePage(index){
-          this.$router.push(`/page/${index}`)
+          this.$router.push(`/follow/${index}`)
         },
 
         // 改变每页显示的条数
         changePagesize(index){
           this.page_size = index;
           console.log('page_size:',this.page_size);
+          this.getData();
+        }
+      },
+      watch:{
+        "$route":function(to, from){
+          if(this.page !== this.get_page){
+            this.page = this.get_page;
+          }
           this.getData();
         }
       }

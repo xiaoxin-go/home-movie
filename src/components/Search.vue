@@ -2,7 +2,10 @@
   <div class="main">
     <Nav></Nav>
     <div class="index-body">
-      <div>
+      <div style="
+    text-align: left;
+    margin: auto;
+    width: 1376px;">
         <div class="index-item" v-for="(data, index) in data_list">
           <b-link >
             <div class="item-img" @click="show(data.title)">
@@ -90,6 +93,11 @@
           this.page_size = index;
           console.log('page_size:',this.page_size);
           this.getData();
+        }
+      },
+      watch:{
+        "$route":function(){
+            this.getData();
         }
       }
     }

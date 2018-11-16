@@ -7,12 +7,16 @@
           <div style="padding:8px;background-color: #fff;">
 
               <div class="performer-item-img" style="overflow: hidden;">
-                <img style="height: 324px;float: right;" :src="'/static/image/performer/' + data.name + '.jpg' + '?' + Math.random()" :alt="data.name">
+                <img style="float: right;" :src="'/static/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
               </div>
             </div>
 
           <div class="performer-item-text">
-            <div class="title">{{data.name}} <Button @click="addFollow(data.id)" size="small" style="margin-left: 10px;">关注</Button> </div>
+            <div class="title">
+              {{data.name}}
+              <Button @click="addFollow(data.id)" size="small">关注</Button>
+              <Button @click="delPerformer" size="small">删除</Button>
+            </div>
           </div>
           <div class="performer-info">
             <div v-if="data.birthday">生日：{{$formatDate(data.birthday)}}</div>
@@ -29,29 +33,30 @@
         <CheckboxGroup v-model="id_list">
         <div class="performer-detail-item" v-for="(data, index) in data_list">
             <div @click="show(data.title)" class="item-img">
-              <div style="height: 260px;width: 183px;overflow: hidden;">
-              <img style="float: right;height: 259px;" :src="seturl(data.title)" :alt="data.title">
+              <div style="height: 269px;width: 189px;overflow: hidden;">
+              <img style="float: right;height: 269px;" :src="seturl(data.title)" :alt="data.title">
               </div>
             </div>
             <div class="item-text">
 
-              <!--<div class="item-text-title" v-if="data.info">{{data.info}}</div>-->
+              <div class="item-text-title" v-if="data.info">{{data.info}}</div>
               <div class="item-text-name">{{settext(data.title)}}/{{$formatDate(data.release_time)}}</div>
-              <Checkbox :label="data.id"><span></span></Checkbox>
+              <Checkbox :label="data.id"><span style="margin: 0;"></span></Checkbox>
               <Button @click="addMoviecol(data.id)" size="small">收藏</Button>
               <Button @click="setData(data.id)" size="small">设为封面</Button>
             </div>
         </div>
         </CheckboxGroup>
-        <div style="position: absolute;top:16px;left: 524px;width: 110px;z-index:2000">
+        <div style="position: fixed;top:16px;left: 524px;width: 180px;z-index:2000">
           <b-button size="sm" @click="delData">删除</b-button>
           <b-button size="sm" @click="changeState">更改</b-button>
+          <b-button size="sm" @click="selectAll">全选</b-button>
         </div>
 
       </div>
     </div>
 
-    <Page style="margin-bottom: 25px;" :total="total" :current="page" :page-size="page_size" :page-size-opts="[20,50,100,200,500]" @on-change="changePage" @on-page-size-change="changePagesize" show-elevator show-sizer />
+    <Page style="margin-bottom: 25px;" :total="total" :current="page" :page-size="page_size" :page-size-opts="[20,50,100,200,500]" @on-change="changePage" show-total @on-page-size-change="changePagesize" show-elevator show-sizer />
 
   </div>
 </template>
@@ -62,7 +67,7 @@
       data(){
         return{
         total:0,          // 总条数
-          page_size:100,      // 每页条数
+          page_size:50,      // 每页条数
           page:1,            // 当前页
           data_list: [],     // 标签列表
           base_data:[],
@@ -100,7 +105,7 @@
 
         // 删除电影
         async delData(){
-          let resp = await delMovie({id_list:array(this.id_list)});
+          let resp = await delMovie({id_list:Array(this.id_list)});
           if (resp.state === 1){
             this.$Message.success('删除成功')
           }else{
@@ -112,7 +117,7 @@
 
         // 删除角色
         async delPerformer(){
-          let resp = await delPerformer({ids: [this.base_data[0].id]});
+          let resp = await delPerformer({id_list: [this.base_data[0].id]});
           if(resp.state === 1){
             this.$Message.success('角色删除成功');
             this.$router.go(-1)
@@ -132,12 +137,21 @@
           }
           this.getData();
         },
+        //全选
+        selectAll(){
+          if(this.id_list.length===0){
+            this.id_list = this.data_list.map(item=>item.id);
+          }else{
+            this.id_list = []
+          }
+        },
 
         // 更换封面
         async changeState(){
-          let resp = await changeState({ids: this.ids});
+          let resp = await changeState({id_list: this.id_list});
           if(resp.state === 1){
-            this.$Message.success('设置成功')
+            this.$Message.success('设置成功');
+            this.id_list = [];
           }else{
             this.$Message.warning('设置失败')
           }
@@ -187,6 +201,7 @@
         // 改变页数
         changePage(index){
           this.page = index;
+          this.id_list = [];
           console.log('page:',this.page);
           this.getData();
         },
@@ -203,8 +218,8 @@
 
 <style scoped>
   .performer-detail-item{
-    margin: 10px;
-    width: 191px;
+    margin: 5px;
+    width: 197px;
     float: left;
     background-color: #fafafa;
     box-shadow: 0 1px 3px rgba(0,0,0,.1);
@@ -218,8 +233,8 @@
     overflow: hidden;
   }
   .performer-data{
-    margin: 10px;
-    width: 242px;
+    margin: 4px 10px 10px;
+    width: 394px;
     background-color: #fafafa;
     float: left;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
@@ -240,7 +255,7 @@
     margin-bottom: 5px;
   }
   .item-img{
-    width: 191px;
+    width: 197px;
     overflow: hidden;
     padding: 4px;
     background: #fff;

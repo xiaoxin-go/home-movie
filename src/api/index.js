@@ -6,6 +6,31 @@ axios.interceptors.response.use((res)=>{
   return res.data;
 });
 
+// 获取用户是否登录
+export let getUser =(data) =>{
+  return axios.get('/home/user',{params:data})
+};
+
+// 检查用户合法性
+export let checkUser =(data) =>{
+  return axios.get('/home/check_user',{params:data})
+};
+
+// 用户注册
+export let register =(data) =>{
+  return axios.post('/home/register/', data)
+};
+
+// 用户登录
+export let login =(data) =>{
+  return axios.post('/home/login', data)
+};
+
+// 退出登录
+export let logout=()=>{
+  return axios.post('/home/logout')
+};
+
 /*-------------------------      电影管理     ------------------------*/
 export let getMovie = (data) =>{
   return axios.get('/home/movie', {params:data})
@@ -34,6 +59,13 @@ export let delPerformer =(data)=>{
 
 export let putPerformerLogo =(data) =>{
   return axios.put('/admin/performerlogo', data)
+};
+
+export let restore = (data) =>{
+  return axios.post('/home/restore',data)
+};
+export let getPerformerS =(data) =>{
+  return axios.get('/home/performers', {params:data})
 };
 
 /*------------------------      获取系列    ----------------------*/
