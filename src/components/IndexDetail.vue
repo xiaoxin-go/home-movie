@@ -6,7 +6,12 @@
     </div>
     <div class="index-body">
       <div v-for="data in base_data" style="width: 70%;">
-        <div style="text-align: left;margin: 10px 0;font-size: 20px;">{{data.title}}
+        <div style="text-align: left;margin: 10px 0;font-size: 20px;">{{data.title + ' ' + data.info}}
+        </div>
+        <div v-if="data.video">
+          <video ishivideo="true" autoplay="true" isrotate="false" autoHide="true">
+            <source :src="server_ip + '/static/video/' + data.video" type="video/mp4">
+          </video>
         </div>
         <div class="index-detail-data clear-float">
           <div class="index-detail-data-img"><img style="width: 900px;" :src="seturl_base(data.title)" :alt="data.title"></div>
@@ -32,7 +37,7 @@
                 <span class="tag" style="margin-right: 10px;" @click="go_performer(performer)" @mouseenter="show_performer=performer" @mouseleave="show_performer=null">{{performer}}</span>
                 <div style="position: absolute; padding: 5px; background-color:#ccc; border-radius:5px" v-if="show_performer===performer">
                   <div style="width: 212px; overflow: hidden;">
-                    <img :src="'/static/image/performer/' + performer + '.jpg?' + Math.random()" style="height: 300px; float: right;" alt="">
+                    <img :src="server_ip + '/static/image/performer/' + performer + '.jpg?' + Math.random()" style="height: 300px; float: right;" alt="">
                   </div>
                 </div>
               </template>
@@ -72,6 +77,21 @@
             </div>
           </div>
         </div>
+
+        <div class="clear-float">
+          <p style="text-align: left;">同类影片</p>
+          <div class="performer-detail-item" v-for="data in other_data">
+            <div @click="show(data.title)" class="item-img">
+              <div style="height: 269px;width: 189px;overflow: hidden;">
+                <img style="float: right;height: 269px;" :src="seturl(data.title)" :alt="data.title">
+              </div>
+            </div>
+            <div class="item-text">
+              <div class="item-text-title" v-if="data.info">{{data.info}}</div>
+              <div class="item-text-name">{{data.title}}/{{$formatDate(data.release_time)}}</div>
+            </div>
+          </div>
+        </div>
         <div style="margin-bottom: 40px;"></div>
       </div>
     </div>
@@ -90,6 +110,7 @@
         keyword: null,
         base_data: null,
         data_list: [],     // 标签列表
+        other_data:[],    // 同类影片
         link_title: [{width: '60%', label: '名称'}, {width: '20%', label: '大小'}, {width: '20%', label: '分享日期'}],
         links: [],
 		    image_detail: null,
@@ -117,6 +138,7 @@
         console.log(resp);
         this.base_data = resp.base_data;
         this.data_list = resp.data;
+        this.other_data = resp.other_data;
         this.links = resp.links;
         this.loading = false;
       },
@@ -127,6 +149,12 @@
       showPerformer(){
         alert('...');
         this.show_performer = true;
+      },
+
+      // 查看电影
+      show(title){
+        let name = title.split(' ')[0];
+        this.$router.push({path:`/${name}`})
       },
 
       //删除单个数据
@@ -159,12 +187,12 @@
 	    // 解析主标签
       seturl_base(title) {
         title = title.split(' ')[0];
-        return '/static/image/movie/' + title + '/' + title + '.jpg'
+        return this.server_ip + '/static/image/movie/' + title + '/' + title + '.jpg'
       },
 	    // 解析标签
       seturl(title) {
         let titles = title.split('/');
-        return '/static/image/movie/' + this.title + '/' + titles[titles.length - 1].split('.')[0] + '.jpg'
+        return this.server_ip + '/static/image/movie/' + this.title + '/' + titles[titles.length - 1].split('.')[0] + '.jpg'
       },
     }
   }
@@ -176,6 +204,22 @@
     width: 100%;
     overflow-y: auto;
     font-family: "Helvetica Neue", Helvetica, Arial, STHeiti-Light, STHeiti-Medium, "Microsoft YaHei", "Microsoft JhengHei", STHeiti, MingLiu;
+  }
+  .performer-detail-item{
+    margin: 5px;
+    width: 197px;
+    float: left;
+    background-color: #fafafa;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+  }
+
+  .item-text{
+    font-size: 14px;
+    color: #000;
+  }
+  .item-text-title{
+    height: 40px;
+    overflow: hidden;
   }
 
   .clear-float:after {

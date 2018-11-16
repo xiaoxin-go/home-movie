@@ -7,7 +7,7 @@
           <div style="padding:8px;background-color: #fff;">
 
               <div class="performer-item-img" style="overflow: hidden;">
-                <img style="float: right;" :src="'/static/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
+                <img style="float: right;" :src="server_ip + '/static/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
               </div>
             </div>
 
@@ -40,7 +40,7 @@
             <div class="item-text">
 
               <div class="item-text-title" v-if="data.info">{{data.info}}</div>
-              <div class="item-text-name">{{settext(data.title)}}/{{$formatDate(data.release_time)}}</div>
+              <div class="item-text-name">{{data.title}}/{{$formatDate(data.release_time)}}</div>
               <Checkbox :label="data.id"><span style="margin: 0;"></span></Checkbox>
               <Button @click="addMoviecol(data.id)" size="small">收藏</Button>
               <Button @click="setData(data.id)" size="small">设为封面</Button>
@@ -188,15 +188,7 @@
 
         seturl(title){
           title = title.split(' ')[0];
-          return '/static/image/movie/' + title + '/' + title + '.jpg'
-        },
-        settitle(title){
-          title = title.split(' ').slice(1,).join(' ');
-          return title
-        },
-        settext(title){
-          title = title.split(' ')[0];
-          return title
+          return this.server_ip + '/static/image/movie/' + title + '/' + title + '.jpg'
         },
         // 改变页数
         changePage(index){

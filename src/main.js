@@ -9,6 +9,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import {formatDate} from "./base/date.js";
 import './base/index.css';
+import './assets/js/hivideo.js'
+import './assets/css/hivideo.css'
 import 'iview/dist/styles/iview.css';
 import {Button, Page, Spin, Message, CheckboxGroup, Checkbox} from 'iview';
 
@@ -22,6 +24,7 @@ Vue.component('CheckboxGroup',CheckboxGroup);
 Vue.component('Checkbox',Checkbox);
 Vue.prototype.$Message = Message;
 
+Vue.prototype.server_ip = 'http://127.0.0.1:5500';
 
 Vue.prototype.$format = function (time) {
   if(!time)return null;

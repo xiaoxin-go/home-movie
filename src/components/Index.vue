@@ -129,7 +129,7 @@
 
         seturl(title){
           title = title.split(' ')[0];
-          return '/static/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
+          return this.server_ip +  '/static/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
         },
         settitle(title){
           title = title.split(' ').slice(1,).join(' ');
