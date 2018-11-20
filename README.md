@@ -36,3 +36,9 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 关注演员： 在演员详情页，可点击关注某个演员关注
 1. 获取演员ID和当前登录用户ID
 2. 将用户和演员信息对应存入关注表中
+
+
+需要完善
+1. performer页面显示
+2. 退出功能
+3. 修改密码

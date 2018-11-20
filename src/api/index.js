@@ -22,7 +22,7 @@ export let register =(data) =>{
 };
 
 // 用户登录
-export let login =(data) =>{
+export let Login =(data) =>{
   return axios.post('/home/login', data)
 };
 

@@ -7,7 +7,7 @@
           <div style="padding:8px;background-color: #fff;">
 
               <div class="performer-item-img" style="overflow: hidden;">
-                <img style="float: right;" :src="server_ip + '/static/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
+                <img style="float: right;" :src="server_ip + '/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
               </div>
             </div>
 
@@ -15,7 +15,7 @@
             <div class="title">
               {{data.name}}
               <Button @click="addFollow(data.id)" size="small">关注</Button>
-              <Button @click="delPerformer" size="small">删除</Button>
+              <Button v-if="username==='xiaoxin'" @click="delPerformer" size="small">删除</Button>
             </div>
           </div>
           <div class="performer-info">
@@ -33,21 +33,22 @@
         <CheckboxGroup v-model="id_list">
         <div class="performer-detail-item" v-for="(data, index) in data_list">
             <div @click="show(data.title)" class="item-img">
-              <div style="height: 269px;width: 189px;overflow: hidden;">
-              <img style="float: right;height: 269px;" :src="seturl(data.title)" :alt="data.title">
+              <div >
+              <img :src="seturl(data.title)" :alt="data.title">
               </div>
             </div>
             <div class="item-text">
 
               <div class="item-text-title" v-if="data.info">{{data.info}}</div>
               <div class="item-text-name">{{data.title}}/{{$formatDate(data.release_time)}}</div>
-              <Checkbox :label="data.id"><span style="margin: 0;"></span></Checkbox>
+              <Checkbox v-if="username==='xiaoxin'" :label="data.id"><span style="margin: 0;"></span></Checkbox>
               <Button @click="addMoviecol(data.id)" size="small">收藏</Button>
-              <Button @click="setData(data.id)" size="small">设为封面</Button>
+              <Button v-if="username==='xiaoxin'" @click="setData(data.id)" size="small">设为封面</Button>
+              <Button v-if="username==='xiaoxin'" @click="del(index,data.id)" size="small">删除</Button>
             </div>
         </div>
         </CheckboxGroup>
-        <div style="position: fixed;top:16px;left: 524px;width: 180px;z-index:2000">
+        <div v-if="username==='xiaoxin'" style="position: fixed;top:16px;left: 524px;width: 180px;z-index:2000">
           <b-button size="sm" @click="delData">删除</b-button>
           <b-button size="sm" @click="changeState">更改</b-button>
           <b-button size="sm" @click="selectAll">全选</b-button>
@@ -63,6 +64,7 @@
 
 <script>
   import {getPerformerDetail, delMovie, putPerformerLogo, changeState, delPerformer, addMoviecol, addFollow} from '../api/index.js';
+  import {getCookie} from "../assets/js/cookie";
     export default {
       data(){
         return{
@@ -73,6 +75,7 @@
           base_data:[],
           loading:true,
           id_list:[],
+          username: getCookie('username')
       }
     },
       components:{
@@ -105,7 +108,7 @@
 
         // 删除电影
         async delData(){
-          let resp = await delMovie({id_list:Array(this.id_list)});
+          let resp = await delMovie({id_list:Array(this.id_list), username: this.username});
           if (resp.state === 1){
             this.$Message.success('删除成功')
           }else{
@@ -117,12 +120,23 @@
 
         // 删除角色
         async delPerformer(){
-          let resp = await delPerformer({id_list: [this.base_data[0].id]});
+          let resp = await delPerformer({id_list: [this.base_data[0].id],username: this.username});
           if(resp.state === 1){
             this.$Message.success('角色删除成功');
             this.$router.go(-1)
           }else{
             this.$Message.warning('角色删除失败')
+          }
+        },
+
+        //删除单个数据
+        async del(index, id){
+          let resp = await delMovie({id:id, username: this.username});
+          if(resp.state===1){
+            this.data_list.splice(index,1);
+            this.$Message.success('删除成功')
+          }else{
+            this.$Message.warning('删除失败')
           }
         },
 
@@ -159,7 +173,7 @@
 
         // 添加收藏
         async addMoviecol(id){
-          let resp = await addMoviecol({id:id});
+          let resp = await addMoviecol({id:id, username: this.username});
           if(resp.state === 0){
             this.$Message.warning('用户未登录')
           }else if(resp.state === 1){
@@ -171,7 +185,7 @@
 
         //关注演员
         async addFollow(id){
-          let resp = await addFollow({id:id});
+          let resp = await addFollow({id:id ,username: this.username});
           if(resp.state === 0){
             this.$Message.warning('用户未登录')
           }else if(resp.state === 1){
@@ -188,7 +202,7 @@
 
         seturl(title){
           title = title.split(' ')[0];
-          return this.server_ip + '/static/image/movie/' + title + '/' + title + '.jpg'
+          return this.server_ip + '/image/movie/' + title + '/' + title + '.jpg'
         },
         // 改变页数
         changePage(index){
@@ -251,6 +265,43 @@
     overflow: hidden;
     padding: 4px;
     background: #fff;
+  }
+  .item-img>div{
+    overflow: hidden;
+  }
+  .item-img>div>img{
+    float: right;
+    height: 269px;
+  }
+  @media screen and (max-width:500px){
+    .index-body>div{
+      width: 100%;
+    }
+    .item-text{
+      font-size: 12px;
+    }
+    .item-text-title{
+      height: 34px;
+    }
+    .performer-detail-item{
+      margin: 0.5%;
+      width: 49%;
+    }
+    .item-img{
+      width: 100%;
+    }
+    .item-img>div{
+      height: auto;
+      width: auto;
+    }
+    .item-img>div>img{
+      height: 275px;
+    }
+  }
+  @media screen and (max-width:375px){
+    .item-img>div>img{
+      height: 255px;
+    }
   }
 
 </style>

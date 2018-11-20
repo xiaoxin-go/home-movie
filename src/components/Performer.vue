@@ -3,19 +3,18 @@
     <Spin size="large" fix v-if="loading"></Spin>
     <div class="index-body">
       <div style="
-    text-align: left;
-    margin: auto;
-    width: 1376px;">
+    text-align: center;
+    margin: auto;">
         <CheckboxGroup v-model="id_list">
         <div class="performer-item" v-for="(data, index) in data_list">
             <div style="padding:8px;background-color: #fff;" @click="show(data.name)">
               <div class="performer-item-img">
-              <img style="height: 324px;float: right;" :src="server_ip + '/static/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
+              <img :src="server_ip + '/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
               </div>
             </div>
             <div class="performer-item-text">
               <div class="performer-text-title">
-                <Checkbox :label="data.id"><span style="margin: 0;padding: 0;"></span></Checkbox>
+                <Checkbox v-if="username==='xiaoxin'" :label="data.id"><span style="margin: 0;padding: 0;"></span></Checkbox>
                 {{data.name}}
                 <Button @click="addFollow(data.id)" size="small">关注</Button>
               </div>
@@ -24,27 +23,29 @@
         </CheckboxGroup>
       </div>
 
-      <div style="position: fixed;top:5px;left: 524px;width: 120px;z-index:2000">
+      <div v-if="username==='xiaoxin'" style="position: fixed;top:5px;left: 524px;width: 120px;z-index:2000">
         <b-button size="sm"  @click="delData">删除</b-button>
         <b-button size="sm"  @click="selectAll">全选</b-button>
       </div>
     </div>
-    <Page style="margin-bottom: 25px;" :total="total" :current="get_page" :page-size="page_size" :page-size-opts="[20,50,100,200,500]" @on-change="changePage" @on-page-size-change="changePagesize" show-total show-elevator show-sizer />
+    <Page :total="total" :current="get_page" :page-size="page_size" :page-size-opts="[30,60,120,240,480]" @on-change="changePage" @on-page-size-change="changePagesize" show-total show-elevator show-sizer />
 
   </div>
 </template>
 
 <script>
   import {getPerformer,delPerformer, addFollow} from '../api/index.js';
+  import {getCookie} from "../assets/js/cookie";
     export default {
       data(){
         return{
         total:0,          // 总条数
-          page_size:20,      // 每页条数
+          page_size:30,      // 每页条数
           page:1,            // 当前页
           data_list: [],     // 标签列表
           loading:true,
           id_list:[],
+          username: getCookie('username')
       }
     },
       components:{
@@ -89,7 +90,7 @@
           console.log(this.id_list);
           let len = this.id_list.length;
           if (len === 0){this.$Message.warning('Please select performer.');return}
-          let resp = await delPerformer({id_list:Array(this.id_list)});
+          let resp = await delPerformer({id_list:Array(this.id_list), username: this.username});
           if (resp.state === 1){
             this.total -= len;
             this.$Message.success('演员删除成功')
@@ -101,7 +102,7 @@
         },
         //关注演员
         async addFollow(id){
-          let resp = await addFollow({id:id});
+          let resp = await addFollow({id:id, username: this.username});
           if(resp.state === 0){
             this.$Message.warning('用户未登录')
           }else if(resp.state === 1){
@@ -144,7 +145,7 @@
   .performer-item{
     background-color: #fafafa;
     display: inline-block;
-    margin: 10px;
+    margin: 5px;
     width: 244px;
     text-align: center;
     box-shadow: 0 1px 3px rgba(0,0,0,.3);
@@ -163,8 +164,36 @@
     height: 324px;
     overflow: hidden;
   }
+  .performer-item-img>img{
+    height: 324px;
+    float: right;
+  }
   .performer-item-img:hover{
     cursor: pointer;
+  }
+
+  @media screen and (max-width:500px){
+    .index-body>div{
+      width: 100%;
+    }
+    .performer-item{
+      width: 49%;
+      margin: 0.5%;
+    }
+    .performer-item-img{
+      width: auto;
+      height: auto;
+    }
+    .performer-item-img>img{
+      height: 267px;
+    }
+    .performer-item-text{
+      font-size: 12px;
+    }
+    .performer-text-title{
+      height: 34px;
+      line-height: 34px;
+    }
   }
   /*.index-item:hover{*/
     /*width: 60%;*/

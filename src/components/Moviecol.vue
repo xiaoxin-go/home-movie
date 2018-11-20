@@ -5,12 +5,14 @@
       <div>
         <div class="index-item" v-for="(data, index) in data_list">
             <div class="item-img" @click="show(data.title)">
-              <img style="width: 100%;" :src="seturl(data.title)" :alt="data.title">
+              <img style="height: 212.3px;width: 315.3px;" :src="seturl(data.title)" :alt="data.title">
             </div>
             <div class="item-text">
               <div class="item-text-title">{{data.info}}</div>
-              <div class="item-text-name">{{settext(data.title)}}/{{$formatDate(data.release_time)}}</div>
-              <Button @click="delData(data.id)" size="small">取消收藏</Button>
+              <div class="item-text-name">{{settext(data.title)}}/{{$formatDate(data.release_time)}}
+                <Button @click="delData(data.id)" size="small" style="margin-left: 5px;">取消收藏</Button>
+              </div>
+
             </div>
         </div>
       </div>
@@ -22,6 +24,7 @@
 
 <script>
   import {getMoviecol, delMoviecol} from '../api/index.js';
+  import {getCookie} from "../assets/js/cookie";
     export default {
       data(){
         return{
@@ -31,6 +34,7 @@
           data_list: [],     // 标签列表
           loading:true,
           ids:[],
+          username: getCookie('username')
       }
     },
       components:{
@@ -54,6 +58,7 @@
             page: this.page,
             page_size: this.page_size,
             total: this.total,
+            username: this.username
           };
           let resp = await getMoviecol(jsonData);
           this.total = resp.total;
@@ -66,7 +71,7 @@
 
         async delData(id ){
           //let id = this.data_list[index].id;
-          let resp = await delMoviecol({id:id});
+          let resp = await delMoviecol({id:id, username: this.username});
           if (resp.state === 1){
             //this.data_list.splice(index, 1);    // 从原数组中移除
             //this.total -= 1;
@@ -86,7 +91,7 @@
 
         seturl(title){
           title = title.split(' ')[0];
-          return '/static/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
+          return 'http://192.168.0.104:8000/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
         },
         settitle(title){
           title = title.split(' ').slice(1,).join(' ');

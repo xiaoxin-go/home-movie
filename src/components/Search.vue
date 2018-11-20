@@ -3,9 +3,8 @@
     <Nav></Nav>
     <div class="index-body">
       <div style="
-    text-align: left;
-    margin: auto;
-    width: 1376px;">
+    text-align: center;
+    margin: auto;">
         <div class="index-item" v-for="(data, index) in data_list">
           <b-link >
             <div class="item-img" @click="show(data.title)">
@@ -14,6 +13,7 @@
             <div class="item-text">
               <div class="item-text-title">{{data.info}}</div>
               <div class="item-text-name">{{settext(data.title)}}/{{$formatDate(data.release_time)}}</div>
+              <Button v-if="username==='xiaoxin'" @click="del(index,data.id)" size="small">删除</Button>
             </div>
           </b-link>
         </div>
@@ -27,13 +27,16 @@
 <script>
   import Nav from '../base/Nav.vue'
   import {getMovie} from '../api/index.js';
-    export default {
+  import {getCookie} from "../assets/js/cookie";
+
+  export default {
       data(){
         return{
         total:0,          // 总条数
           page_size:20,      // 每页条数
           page:1,            // 当前页
           data_list: [],     // 标签列表
+          username:getCookie('username')
       }
     },
       components:{
@@ -69,9 +72,20 @@
           this.$router.push({path:`/${name}`})
         },
 
+        //删除单个数据
+        async del(index, id){
+          let resp = await delMovie({id:id});
+          if(resp.state===1){
+            this.data_list.splice(index,1);
+            this.total -= 1;
+            this.$Message.success('删除成功')
+          }else{
+            this.$Message.warning('删除失败')
+          }
+        },
         seturl(title){
           title = title.split(' ')[0];
-          return '/static/image/movie/' + title + '/' + title + '.jpg'
+          return this.server_ip +  '/image/movie/' + title + '/' + title + '.jpg'
         },
         settitle(title){
           title = title.split(' ').slice(1,).join(' ');

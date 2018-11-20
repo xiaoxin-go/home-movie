@@ -22,3 +22,83 @@
 .ivu-message{
   z-index: 2500;
 }
+.index-item{
+  display: inline-block;
+  margin: 5px;
+  width: 324px;
+  background: #fafafa;
+  padding-bottom: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
+  text-align: center;
+}.nav-phone{
+   position: fixed;
+   display: none;
+ }
+.ivu-page{
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+.fixed-top{
+  z-index: 1000;
+}
+
+@media screen and (max-width:500px){
+  .fixed-top{
+    display: none;
+  }
+  .nav-phone{
+    position: fixed;
+    height: 45px;
+    line-height: 45px;
+    width: 100%;
+    top: 0;
+    display: block;
+    background: #f8f9fa !important;
+    z-index: 1000;
+    text-align: left;
+  }
+  .nav-phone > ul{
+    padding-left: 5px;
+  }
+  .nav-phone > ul > li{
+    display: inline-block;
+  }
+  .nav-phone > ul > li >a{
+    color: #000;
+    background: #F1F1F2;
+    padding: 10px;
+    border-radius: 5px;
+    margin-left: 8px;
+  }
+  .nav-phone > ul > li >a:active{
+    background: #e5e5e5;
+  }
+  .ivu-input:hover{
+    border-color: #ccc;
+  }
+  .index-body{
+    margin-top: 45px;
+  }
+  .ivu-page-options{
+    display: none;
+  }
+  .video-js .vjs-tech{
+    transform: rotate(90deg) scale(1.5);
+  }
+  .user-oper{
+    position: absolute;
+    width: 66px;
+    right: 2px;
+    list-style: none;
+    text-align: center;
+    background: #fefefe;
+    /* border: 1px solid #ccc; */
+    box-shadow: 0 1px 1px rgba(0,0,0,.2)
+  }
+  .user-oper>li{
+    height: 30px;
+    line-height: 30px;
+    border-top: 1px solid #efefef;
+  }
+
+}

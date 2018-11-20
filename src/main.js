@@ -9,12 +9,12 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import {formatDate} from "./base/date.js";
 import './base/index.css';
-import './assets/js/hivideo.js'
-import './assets/css/hivideo.css'
 import 'iview/dist/styles/iview.css';
-import {Button, Page, Spin, Message, CheckboxGroup, Checkbox} from 'iview';
+import VideoPlayer from 'vue-video-player'
+import {Button, Page, Spin, Message, CheckboxGroup, Checkbox, Input, Icon, Modal, Drawer} from 'iview';
 
 
+Vue.use(VideoPlayer);
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.component('Button', Button);
@@ -22,9 +22,17 @@ Vue.component('Page',Page);
 Vue.component('Spin',Spin);
 Vue.component('CheckboxGroup',CheckboxGroup);
 Vue.component('Checkbox',Checkbox);
+Vue.component('Input', Input);
+Vue.component('Icon', Icon);
+Vue.component('Modal', Modal);
+Vue.component('Drawer', Drawer);
 Vue.prototype.$Message = Message;
+require('video.js/dist/video-js.css');
+require('vue-video-player/src/custom-theme.css');
 
-Vue.prototype.server_ip = 'http://127.0.0.1:5500';
+//Vue.prototype.server_ip = 'http://127.0.0.1:5500';
+Vue.prototype.server_ip = 'http://192.168.0.104:8000';
+//Vue.prototype.server_ip = '';
 
 Vue.prototype.$format = function (time) {
   if(!time)return null;

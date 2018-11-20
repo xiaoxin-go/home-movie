@@ -15,16 +15,16 @@
             <div class="item-text">
               <div class="item-text-title">{{data.info}}</div>
               <div class="item-text-name">
-                <Checkbox :label="data.id"><span style="margin: 0;padding: 0;"></span></Checkbox>
+                <Checkbox v-if="username==='xiaoxin'" :label="data.id"><span style="margin: 0;padding: 0;"></span></Checkbox>
                 {{settext(data.title)}}/{{$formatDate(data.release_time)}}
                 <Button @click="addMoviecol(data.id)" size="small">收藏</Button>
-                <Button @click="del(index,data.id)" size="small">删除</Button>
+                <Button v-if="username==='xiaoxin'" @click="del(index,data.id)" size="small">删除</Button>
               </div>
             </div>
         </div>
         </CheckboxGroup>
       </div>
-      <div style="position: fixed;top:5px;left: 524px;width: 110px;z-index:2000">
+      <div v-if="username==='xiaoxin'" style="position: fixed;top:5px;left: 524px;width: 110px;z-index:2000">
         <b-button size="sm" @click="delData">删除</b-button>
         <b-button size="sm" @click="changeState">更改</b-button>
       </div>
@@ -37,7 +37,9 @@
 
 <script>
   import {getMovie, delMovie, addMoviecol,changeState, getGenre} from '../api/index.js';
-    export default {
+  import {getCookie} from "../assets/js/cookie";
+
+  export default {
       data(){
         return{
         total:0,          // 总条数
@@ -46,6 +48,7 @@
           data_list: [],      // 标签列表
           loading:true,
           id_list: [],
+          username: getCookie('username')
       }
     },
       components:{
@@ -88,6 +91,7 @@
           if(len===0){this.$Message.warning('please select movie.');return}
           let json_data = {
             id_list: Array(this.id_list),
+            username: this.username
           };
           let resp = await delMovie(json_data);
           if (resp.state === 1){
@@ -102,9 +106,10 @@
 
         //删除单个数据
         async del(index, id){
-          let resp = await delMovie({id:id});
+          let resp = await delMovie({id:id, username: this.username});
           if(resp.state===1){
             this.data_list.splice(index,1);
+            this.total -= 1;
             this.$Message.success('删除成功')
           }else{
             this.$Message.warning('删除失败')
@@ -130,7 +135,7 @@
 
         seturl(title){
           title = title.split(' ')[0];
-          return this.server_ip + '/static/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
+          return this.server_ip + '/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
         },
         settitle(title){
           title = title.split(' ').slice(1,).join(' ');

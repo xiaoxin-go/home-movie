@@ -96,6 +96,8 @@
         if(resp.state === 1){
           this.$Message.success('注册成功');
           this.$router.push('/')
+        }else if(resp.state === 2){
+          this.$Message.warning('用户已存在')
         }else{
           this.$Message.warning('注册失败')
         }
@@ -128,5 +130,6 @@
     background: #ffffff;
     padding: 40px;
     box-shadow: 0 1px 3px rgba(0,0,0,.3);
+    margin-top: 80px;
   }
 </style>

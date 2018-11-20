@@ -3,7 +3,7 @@
     <Spin size="large" fix v-if="loading"></Spin>
     <div class="index-body">
       <div style="
-    text-align: left;
+    text-align: center;
     margin: auto;">
         <CheckboxGroup v-model="id_list">
         <div class="index-item" v-for="(data, index) in data_list">
@@ -15,16 +15,16 @@
             <div class="item-text">
               <div class="item-text-title">{{data.info}}</div>
               <div class="item-text-name">
-                <Checkbox :label="data.id"><span style="margin: 0;padding: 0;"></span></Checkbox>
+                <Checkbox :label="data.id" v-if="username==='xiaoxin'"><span style="margin: 0;padding: 0;"></span></Checkbox>
                 {{settext(data.title)}}/{{$formatDate(data.release_time)}}
                 <Button @click="addMoviecol(data.id)" size="small">收藏</Button>
-                <Button @click="del(index,data.id)" size="small">删除</Button>
+                <Button v-if="username==='xiaoxin'" @click="del(index,data.id)" size="small">删除</Button>
               </div>
             </div>
         </div>
         </CheckboxGroup>
       </div>
-      <div style="position: fixed;top:5px;left: 524px;width: 110px;z-index:2000">
+      <div v-if="username==='xiaoxin'" style="position: fixed;top:5px;left: 524px;width: 110px;z-index:2000">
         <b-button size="sm" @click="delData">删除</b-button>
         <b-button size="sm" @click="changeState">更改</b-button>
       </div>
@@ -37,15 +37,18 @@
 
 <script>
   import {getMovie, delMovie, addMoviecol,changeState} from '../api/index.js';
-    export default {
+  import {getCookie} from "../assets/js/cookie";
+
+  export default {
       data(){
         return{
         total:0,          // 总条数
           page_size:20,      // 每页条数
           //page:1,            // 当前页
           data_list: [],      // 标签列表
-          loading:true,
+          loading:false,
           id_list: [],
+          username:getCookie('username'),
       }
     },
       components:{
@@ -88,6 +91,7 @@
           if(len===0){this.$Message.warning('please select movie.');return}
           let json_data = {
             id_list: Array(this.id_list),
+            username: this.username
           };
           let resp = await delMovie(json_data);
           if (resp.state === 1){
@@ -101,9 +105,10 @@
         },
         //删除单个数据
         async del(index, id){
-           let resp = await delMovie({id:id});
+           let resp = await delMovie({id:id, username: this.username});
            if(resp.state===1){
              this.data_list.splice(index,1);
+             this.total -= 1;
              this.$Message.success('删除成功')
            }else{
              this.$Message.warning('删除失败')
@@ -112,7 +117,7 @@
 
         // 添加收藏
         async addMoviecol(id){
-          let resp = await addMoviecol({id:id});
+          let resp = await addMoviecol({id:id, username: this.username});
           if(resp.state === 0){
             this.$Message.warning('用户未登录')
           }else if(resp.state === 1){
@@ -129,7 +134,8 @@
 
         seturl(title){
           title = title.split(' ')[0];
-          return this.server_ip +  '/static/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
+          //return this.server_ip +  '/static/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
+          return this.server_ip +  '/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
         },
         settitle(title){
           title = title.split(' ').slice(1,).join(' ');
@@ -178,15 +184,6 @@
 </script>
 
 <style>
-  .index-item{
-    display: inline-block;
-    margin: 10px;
-    width: 324px;
-    background: #fafafa;
-    padding-bottom: 5px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.3);
-    text-align: center;
-  }
   .item-text{
     font-size: 14px;
     color: #000;
@@ -194,6 +191,14 @@
   .item-text-title{
     height: 40px;
     overflow: hidden;
+  }
+  @media screen and (max-width:500px){
+    .item-text{
+      font-size: 12px;
+    }
+    .item-text-title{
+      height: 36px;
+    }
   }
 
 </style>
