@@ -6,6 +6,11 @@ axios.interceptors.response.use((res)=>{
   return res.data;
 });
 
+// 获取服务器地址
+export let getServer =()=>{
+  return axios.get('/home/server')
+};
+
 // 获取用户是否登录
 export let getUser =(data) =>{
   return axios.get('/home/user',{params:data})

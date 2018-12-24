@@ -41,7 +41,12 @@
 .fixed-top{
   z-index: 1000;
 }
-
+.fixed-opera{
+  position: fixed;
+  top:5px;
+  left: 524px;
+  z-index:2000
+}
 @media screen and (max-width:500px){
   .fixed-top{
     display: none;
@@ -99,6 +104,11 @@
     height: 30px;
     line-height: 30px;
     border-top: 1px solid #efefef;
+  }
+  .fixed-opera{
+    top: 37px;
+    right: -8px;
+    left: auto;
   }
 
 }

@@ -27,13 +27,11 @@ Vue.component('Icon', Icon);
 Vue.component('Modal', Modal);
 Vue.component('Drawer', Drawer);
 Vue.prototype.$Message = Message;
+import global from './config.js'
 require('video.js/dist/video-js.css');
 require('vue-video-player/src/custom-theme.css');
 
-//Vue.prototype.server_ip = 'http://127.0.0.1:5500';
-Vue.prototype.server_ip = 'http://192.168.0.104:8000';
-//Vue.prototype.server_ip = '';
-
+Vue.prototype.$global = global;
 Vue.prototype.$format = function (time) {
   if(!time)return null;
   let date = new Date(time);

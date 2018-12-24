@@ -7,11 +7,12 @@
 
 <script>
   import Nav from './base/Nav.vue'
-export default {
+
+  export default {
   name: 'App',
   components:{
     Nav,
-  }
+  },
 }
 </script>
 

@@ -135,7 +135,7 @@
 
       seturl(title){
         title = title.split(' ')[0];
-        return this.server_ip + '/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
+        return this.$global.server_ip + '/image/movie/' + title + '.jpg?' + Math.random()
       },
       settitle(title){
         title = title.split(' ').slice(1,).join(' ');
@@ -209,20 +209,6 @@
   .item-text-title{
     height: 40px;
     overflow: hidden;
-  }
-  .fixed-opera{
-    position: fixed;
-    top:5px;
-    left: 524px;
-    z-index:2000
-  }
-  @media screen and (max-width:500px){
-    .fixed-opera{
-      top: 37px;
-      right: -8px;
-      left: auto;
-    }
-
   }
 
 </style>

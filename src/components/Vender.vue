@@ -133,7 +133,7 @@
 
       seturl(title){
         title = title.split(' ')[0];
-        return this.server_ip +  '/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
+        return this.$global.server_ip +  '/image/movie/' + title + '.jpg?' + Math.random()
       },
       settitle(title){
         title = title.split(' ').slice(1,).join(' ');

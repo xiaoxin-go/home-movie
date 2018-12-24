@@ -9,7 +9,7 @@
         <div class="performer-item" v-for="(data, index) in data_list">
             <div style="padding:8px;background-color: #fff;" @click="show(data.name)">
               <div class="performer-item-img">
-              <img :src="server_ip + '/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
+              <img :src="$global.server_ip + '/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
               </div>
             </div>
             <div class="performer-item-text">

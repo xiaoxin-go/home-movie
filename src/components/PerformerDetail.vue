@@ -7,7 +7,7 @@
           <div style="padding:8px;background-color: #fff;">
 
               <div class="performer-item-img" style="overflow: hidden;">
-                <img style="float: right;" :src="server_ip + '/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
+                <img style="float: right;" :src="$global.server_ip + '/image/performer/' + data.name + '.jpg?' + Math.random()" :alt="data.name">
               </div>
             </div>
 
@@ -202,7 +202,7 @@
 
         seturl(title){
           title = title.split(' ')[0];
-          return this.server_ip + '/image/movie/' + title + '/' + title + '.jpg'
+          return this.$global.server_ip + '/image/movie/' + title + '.jpg'
         },
         // 改变页数
         changePage(index){

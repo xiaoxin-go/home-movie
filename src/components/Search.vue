@@ -85,7 +85,7 @@
         },
         seturl(title){
           title = title.split(' ')[0];
-          return this.server_ip +  '/image/movie/' + title + '/' + title + '.jpg'
+          return this.$global.server_ip +  '/image/movie/' + title + '.jpg'
         },
         settitle(title){
           title = title.split(' ').slice(1,).join(' ');

@@ -18,7 +18,7 @@
           <div class="index-detail-data-img"><img :src="seturl_base()" :alt="data.title"></div>
           <div class="index-detail-data-info">
             <p><b>名称：</b><span style="color: orangered;margin-right: 10px;">{{title}}</span>
-              <Button @click="del(data.id, null)" size="small">删除</Button>
+              <Button @click="del(data.id, null)" v-if="username==='xiaoxin'" size="small">删除</Button>
               <Button @click="addMoviecol(data.id)" size="small">收藏</Button>
             </p>
             <p><b>发行日期：</b><span>{{ $formatDate(data.release_time)}}</span></p>
@@ -41,7 +41,7 @@
                 <span class="tag" style="margin-right: 10px;" @click="go_performer(performer)" @mouseenter="show_performer=performer" @mouseleave="show_performer=null">{{performer}}</span>
                 <div style="position: absolute; padding: 5px; background-color:#ccc; border-radius:5px" v-if="show_performer===performer">
                   <div style="width: 212px; overflow: hidden;">
-                    <img :src="server_ip + '/image/performer/' + performer + '.jpg?' + Math.random()" style="height: 300px; float: right;" alt="">
+                    <img :src="$global.server_ip + '/image/performer/' + performer + '.jpg?' + Math.random()" style="height: 300px; float: right;" alt="">
                   </div>
                 </div>
               </template>
@@ -189,7 +189,7 @@
       },
 
       setvideo(){
-        return this.server_ip +  '/video/' + this.base_data[0].video
+        return this.$global.server_ip +  '/video/' + this.base_data[0].video
       },
 
       // 添加收藏
@@ -212,12 +212,13 @@
         console.log(json_data);
         let resp = await delMovie(json_data);
         if(resp.state===1){
+          this.$Message.success('删除成功');
+          console.log(index);
           if(index){
             this.data_list.splice(index,1);
-            this.$Message.success('删除成功')
           }else{
-            this.$Message.success('删除成功');
-            this.$router.go(-1);
+            console.log('...');
+            this.$router.go(-1)
           }
         }else{
           this.$Message.warning('删除失败')
@@ -243,18 +244,18 @@
 	    // 解析主标签
       seturl_base() {
         let title = this.title.split(' ')[0];
-        return this.server_ip + '/image/movie/' + title + '/' + title + '.jpg'
+        return this.$global.server_ip + '/image/movie/' + title + '.jpg'
       },
 	    // 解析标签
       seturl(title) {
         let titles = title.split('/');
-        return this.server_ip + '/image/movie/' + this.title + '/' + titles[titles.length - 1].split('.')[0] + '.jpg?' + Math.random();
+        return this.$global.server_ip + '/image/movie/' + titles[titles.length - 1].split('.')[0] + '.jpg?' + Math.random();
       },
 
       seturl_genre(title) {
         let titles = title.split('/');
         title = titles[titles.length - 1].split('.')[0];
-        return this.server_ip + '/image/movie/' + title + '/' + title + '.jpg?' + Math.random();
+        return this.$global.server_ip + '/image/movie/' + title + '.jpg?' + Math.random();
       },
     },
     watch:{
@@ -398,6 +399,9 @@
     width: 100%;
     padding: 4px;
     background: #fff;
+  }
+  .other-item-img:hover{
+    cursor: pointer;
   }
   .other-item-img > div{
     width: 100%;

@@ -91,7 +91,7 @@
 
         seturl(title){
           title = title.split(' ')[0];
-          return 'http://192.168.0.104:8000/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
+          return this.$global.server_ip + '/image/movie/' + title + '.jpg?' + Math.random()
         },
         settitle(title){
           title = title.split(' ').slice(1,).join(' ');

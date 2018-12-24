@@ -24,9 +24,11 @@
         </div>
         </CheckboxGroup>
       </div>
-      <div v-if="username==='xiaoxin'" style="position: fixed;top:5px;left: 524px;width: 110px;z-index:2000">
-        <b-button size="sm" @click="delData">删除</b-button>
-        <b-button size="sm" @click="changeState">更改</b-button>
+      <div>
+        <div v-if="username==='xiaoxin'" style="display: block;" class="fixed-opera">
+          <b-button size="sm" variant="light" @click="delData">删除</b-button>
+          <b-button size="sm"  variant="light" @click="selectAll">全选</b-button>
+        </div>
       </div>
 
     </div>
@@ -69,8 +71,6 @@
         async getData() {
           this.loading = true;
           //this.page = this.get_page;
-          console.log('this.page:',this.get_page);
-          console.log(this.page);
           let jsonData = {
             page: this.get_page,
             page_size: this.page_size,
@@ -83,6 +83,14 @@
             this.data_list = resp.data;
           }
           this.loading = false
+        },
+
+        selectAll(){
+          if(this.id_list.length === this.data_list.length){
+            this.id_list = []
+          }else{
+            this.id_list = this.data_list.map(item=>item.id);
+          }
         },
         // 删除数据
         async delData(){
@@ -109,7 +117,7 @@
            if(resp.state===1){
              this.data_list.splice(index,1);
              this.total -= 1;
-             this.$Message.success('删除成功')
+             this.$Message.success('删除成功');
            }else{
              this.$Message.warning('删除失败')
            }
@@ -134,8 +142,8 @@
 
         seturl(title){
           title = title.split(' ')[0];
-          //return this.server_ip +  '/static/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
-          return this.server_ip +  '/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
+          //return this.$global.server_ip +  '/static/image/movie/' + title + '/' + title + '.jpg?' + Math.random()
+          return this.$global.server_ip +  '/image/movie/' + title + '.jpg?' + Math.random()
         },
         settitle(title){
           title = title.split(' ').slice(1,).join(' ');

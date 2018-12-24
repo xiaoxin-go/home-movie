@@ -97,7 +97,7 @@
         </li>
         <li>
           <!--<b-form-input size="sm" v-model="keyword" class="mr-sm-2" type="text" placeholder="Search" @keyup.enter.native="search"/>-->
-          <Input v-model="keyword" placeholder="search.." clearable style="width: 150px;"/>
+          <Input v-model="keyword" placeholder="search.." @keyup.enter.native="server" clearable style="width: 150px;"/>
         </li>
         <li>
           <b-button size="sm" class="my-2 my-sm-0" variant="light" @click="search">Search</b-button>
@@ -113,7 +113,7 @@
           <template v-if="login">
             <li @click="$router.push('/moviecol')">收藏</li>
             <li @click="$router.push('/follow')">关注</li>
-            <li>Logout</li>
+            <li @click="logout">Logout</li>
             <li>修改密码</li>
             <li v-if="username==='xiaoxin'">回收站</li>
           </template>
@@ -155,7 +155,7 @@
 </template>
 <script>
   import {setCookie, getCookie, delCookie} from '../assets/js/cookie.js'
-  import {getUser, checkUser, register, Login, logout} from '../api/index.js'
+  import {getUser, checkUser, register, Login, logout, getServer} from '../api/index.js'
 
   export default {
     data() {
@@ -187,6 +187,10 @@
     created() {
       this.getData();
     },
+    mounted(){
+      console.log('nav');
+      this.getIp();
+    },
     methods: {
       // 获取用户信息
       async getData() {
@@ -196,10 +200,16 @@
           this.login = true;
           this.username = getCookie('username');
         }*/
+
         this.username = getCookie('username');
         if(this.username){
           this.login = true;
         }
+      },
+      async getIp(){
+        let resp = await getServer();
+        console.log(resp);
+        this.$global.setServerIp(resp.server);
       },
       clicktest(){
         this.login_model = true;
@@ -266,7 +276,8 @@
           this.data = resp.data[0];
           setCookie('username',this.username, 1000 * 60);
           this.login = true;
-          this.$Message.success('login successful!')
+          this.$Message.success('login successful!');
+          window.reload()
         }else{
           this.$Message.warning('login failed!')
         }
